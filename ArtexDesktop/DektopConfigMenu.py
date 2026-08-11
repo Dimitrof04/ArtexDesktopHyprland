@@ -17,7 +17,7 @@ from Modules.DesktopMenu.personalization import PersonalizationTab
 from Modules.DesktopMenu.keybinds import KeybindsTab
 from Modules.DesktopMenu.system_config import SystemConfigTab
 from Modules.DesktopMenu.info import InfoTab
-from Modules.theme_sync import set_system_theme
+from Modules.DesktopMenu.misc import MiscTab
 
 config_path = str(Path.home() / ".config" / "Desktop.conf")
 
@@ -31,6 +31,11 @@ class SettingsApp(QWidget):
 
         self.settings = QSettings(config_path, QSettings.Format.IniFormat)
 
+        # TIMER DE AUTOSAVE
+        self.autosave_timer = QTimer()
+        self.autosave_timer.setSingleShot(True)
+        self.autosave_timer.timeout.connect(self.save_settings)
+
         main_layout = QHBoxLayout(self)
         main_layout.setContentsMargins(15, 15, 15, 15)
         main_layout.setSpacing(15)
@@ -41,20 +46,23 @@ class SettingsApp(QWidget):
         self.sidebar.addItem("Personalização")
         self.sidebar.addItem("Atalhos & Apps")
         self.sidebar.addItem("Configurações do Sistema")
+        self.sidebar.addItem("Misc")
         self.sidebar.addItem("Info")
 
         # Área de Conteúdo Modularizada
         self.content_area = QStackedWidget()
 
-        # Inicializa as abas (A PersonalizationTab registrará suas variáveis no self.app)
+        # Inicializa as abas
         self.personalization_tab = PersonalizationTab(self)
         self.keybinds_tab = KeybindsTab(self)
         self.system_config_tab = SystemConfigTab(self)
+        self.misc_tab = MiscTab(self)
         self.info_tab = InfoTab()
 
         self.content_area.addWidget(self.make_scrollable(self.personalization_tab))
         self.content_area.addWidget(self.make_scrollable(self.keybinds_tab))
         self.content_area.addWidget(self.make_scrollable(self.system_config_tab))
+        self.content_area.addWidget(self.make_scrollable(self.misc_tab))
         self.content_area.addWidget(self.make_scrollable(self.info_tab))
 
         self.sidebar.currentRowChanged.connect(self.content_area.setCurrentIndex)
@@ -73,13 +81,28 @@ class SettingsApp(QWidget):
 
         self.reload_theme()
 
+    def trigger_autosave(self):
+        """Reinicia o timer de autosave quando alguma alteração é detectada."""
+        if hasattr(self, 'autosave_checkbox') and self.autosave_checkbox.isChecked():
+            self.autosave_timer.start()
+
+    def toggle_autosave(self):
+        if not self.autosave_checkbox.isChecked():
+            self.autosave_timer.stop()
+        self.trigger_autosave()
+
+    def update_autosave_delay(self, value):
+        self.autosave_timer.setInterval(max(100, value))
+        self.trigger_autosave()
+
     def check_external_theme_change(self):
-        """Verifica se o Desktop.conf mudou externamente (ex: via ArtexDesktop --theme) e atualiza a UI."""
+        """Verifica se o Desktop.conf mudou externamente e atualiza a UI."""
         if os.path.exists(config_path):
             mtime = os.path.getmtime(config_path)
             if mtime != self.last_config_mtime:
                 self.last_config_mtime = mtime
                 self.reload_theme()
+                self.load_settings()
 
     def reload_theme(self):
         """Lê o Desktop.conf e re-aplica o tema na UI do próprio menu."""
@@ -110,6 +133,9 @@ class SettingsApp(QWidget):
         self.setStyleSheet(get_stylesheet(is_light, accent_color))
 
     def load_settings(self):
+        # Desativa temporariamente os sinais para evitar autossave durante o carregamento
+        self.block_all_signals(True)
+
         # 1. Tema
         self.settings.beginGroup("theme")
         if hasattr(self, 'theme_combo'):
@@ -133,7 +159,6 @@ class SettingsApp(QWidget):
         if hasattr(self, 'wallpaper_path_input'):
             wp_path = str(self.settings.value("Wallpaper", ""))
             self.wallpaper_path_input.setText(wp_path)
-            # Atualiza a prévia de imagem se existir o método na aba de personalização
             if hasattr(self.personalization_tab, 'update_wallpaper_preview'):
                 self.personalization_tab.update_wallpaper_preview(wp_path)
                 
@@ -174,7 +199,30 @@ class SettingsApp(QWidget):
             self.bind_ToggleFloting.setText(str(self.settings.value("bind_ToggleFloting", "Space")))
         self.settings.endGroup()
 
+        # 5. Misc
+        self.settings.beginGroup("Misc")
+        if hasattr(self, 'autosave_checkbox'):
+            is_autosave = str(self.settings.value("AutoSave", "False")).lower() == "true"
+            self.autosave_checkbox.setChecked(is_autosave)
+
+        if hasattr(self, 'autosave_delay_spin'):
+            delay = int(self.settings.value("AutoSaveDelay", 1000))
+            self.autosave_delay_spin.setValue(max(100, delay))
+            self.autosave_timer.setInterval(max(100, delay))
+
+        if hasattr(self, 'icon_logo_input'):
+            icon_val = str(self.settings.value("iconlogo", "nil"))
+            self.icon_logo_input.setText(icon_val)
+        self.settings.endGroup()
+
+        self.block_all_signals(False)
         self.apply_styles()
+
+    def block_all_signals(self, block: bool):
+        """Bloqueia sinais durante carregamentos para evitar chamadas acidentais de salvamento."""
+        if hasattr(self, 'autosave_checkbox'): self.autosave_checkbox.blockSignals(block)
+        if hasattr(self, 'autosave_delay_spin'): self.autosave_delay_spin.blockSignals(block)
+        if hasattr(self, 'icon_logo_input'): self.icon_logo_input.blockSignals(block)
 
     def save_settings(self):
         """Salva as configurações no Desktop.conf e aplica as alterações nos apps / Hyprland."""
@@ -183,14 +231,13 @@ class SettingsApp(QWidget):
         if not accent_color:
             accent_color = "#89b4fa"
 
-        # 1. Notifica o sistema e sincroniza
-        set_system_theme(selected_theme, accent_color)
-
-        # 2. Grava no QSettings / Desktop.conf
+        # Tema
         self.settings.beginGroup("theme")
         self.settings.setValue("theme", selected_theme)
         self.settings.setValue("colortheme", accent_color)
         self.settings.endGroup()
+
+        subprocess.run(["ArtexDesktop", "--theme", selected_theme])
 
         # Hyprland
         self.settings.beginGroup("Hyprland")
@@ -219,11 +266,11 @@ class SettingsApp(QWidget):
         # Apps & Keybinds
         self.settings.beginGroup("Apps")
         if hasattr(self, 'app_terminal_input'):
-            self.settings.setValue("terminal", self.app_terminal_input.text().strip() or "kitty")
+            self.settings.setValue("terminal", self.app_terminal_input.text().strip() or "foot")
         if hasattr(self, 'app_filemanager_input'):
-            self.settings.setValue("filemanager", self.app_filemanager_input.text().strip() or "dolphin")
+            self.settings.setValue("filemanager", self.app_filemanager_input.text().strip() or "Thunar")
         if hasattr(self, 'app_menu_input'):
-            self.settings.setValue("menu", self.app_menu_input.text().strip() or "hyprlauncher")
+            self.settings.setValue("menu", self.app_menu_input.text().strip() or "ArtexDesktop --StartMenu -r")
         if hasattr(self, 'app_Browser_input'):
             self.settings.setValue("Browser", self.app_Browser_input.text().strip() or "firefox")
         self.settings.endGroup()
@@ -245,11 +292,23 @@ class SettingsApp(QWidget):
             self.settings.setValue("bind_ToggleFloting", self.bind_ToggleFloting.text().strip() or "Space")
         self.settings.endGroup()
 
+        # 5. Save Misc
+        self.settings.beginGroup("Misc")
+        if hasattr(self, 'autosave_checkbox'):
+            self.settings.setValue("AutoSave", "True" if self.autosave_checkbox.isChecked() else "False")
+        if hasattr(self, 'autosave_delay_spin'):
+            self.settings.setValue("AutoSaveDelay", max(100, self.autosave_delay_spin.value()))
+        if hasattr(self, 'icon_logo_input'):
+            val = self.icon_logo_input.text().strip()
+            self.settings.setValue("iconlogo", val if val else "nil")
+        self.settings.endGroup()
+
         self.settings.sync()
         self.apply_styles()
 
         # Aplicar alterações do Hyprland via hyprctl
         try:
+            subprocess.run(["hyprctl", "reload"])
             if rounding:
                 subprocess.run(["hyprctl", "keyword", "decoration:rounding", rounding], stderr=subprocess.DEVNULL)
             if border_size:

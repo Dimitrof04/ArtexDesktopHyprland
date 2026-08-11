@@ -64,8 +64,7 @@ yay -Syu --noconfirm
 yay -S --needed --noconfirm hyprland waybar python-pyqt6 foot fish awww hyprlock pavucontrol ttf-nerd-fonts-symbols dolphin
 
 # Atualizar repositórios e instalar pacotes do sistema
-yay -S --needed --noconfirm gtk3 python python-psutil python-pyqt6 networkmanager bluez bluez-utils wireplumber pipewire-audio lsb-release ttf-font-awesome ttf-nerd-fonts-symbols-common noto-fonts-emoji gtk-layer-shell
-#yay -S --needed --noconfirm luarocks gobject-introspection lua54 lua lua-lgi luajit lua54
+yay -S --needed --noconfirm gtk3 python python-pip python-pillow python-requests python-psutil python-pyqt6 networkmanager bluez bluez-utils wireplumber pipewire-audio lsb-release ttf-font-awesome ttf-nerd-fonts-symbols-common noto-fonts-emoji gtk-layer-shell
 
 #sudo luarocks --lua-version=5.1 install lgi
 
@@ -79,7 +78,8 @@ INSTALL_TOOLS=${INSTALL_TOOLS:-Y}
 
 if [[ $INSTALL_TOOLS =~ ^[Yy]$ ]]; then
     echo -e "${BLUE}[+] Installing tools...${NC}"
-    yay -S --needed fastfetch asciiquarium pipes.sh lavat peaclock unimatrix cava --noconfirm
+    yay -S --needed fastfetch asciiquarium pipes.sh lavat peaclock unimatrix cava Audacious lyrics-in-terminal --noconfirm
+    pip install wxPython requests psutil pywinctl bs4 plyer
 fi
 
 # 3. Copiar configurações de .config

@@ -9,6 +9,7 @@ StartMenuPath="$HOME/.local/share/ArtexDesktop/StartMenu.py"
 DektopConfigMenuPath="$HOME/.local/share/ArtexDesktop/DektopConfigMenu.py"
 ShellBarPath="$HOME/.local/share/ArtexDesktop/ShellBar.py"
 CONFIG_PATH="$HOME/.config/Desktop.conf"
+WallpaperSelectPath="$HOME/.local/share/ArtexDesktop/wallpaper_select.py"
 
 PROG_NAME="ArtexDesktop"
 VERSION="v0.3"
@@ -139,6 +140,7 @@ get_current_theme() {
     fi
 }
 
+# --- Na função get_service_info ---
 get_service_info() {
     local target="$1"
     case "$target" in
@@ -158,9 +160,9 @@ get_service_info() {
             SERVICE_NAME="StartMenu.py"
             ;;
         "Wallpaper")
-            SERVICE_PATH="$HOME/.local/share/ArtexDesktop/Wallpaper.py"
-            SERVICE_LOCK="Wallpaper"
-            SERVICE_NAME="Wallpaper.py"
+            SERVICE_PATH="$WallpaperSelectPath"
+            SERVICE_LOCK="WallpaperSelect"
+            SERVICE_NAME="wallpaper_select.py"
             ;;
         *)
             SERVICE_PATH=""

@@ -25,9 +25,9 @@ local conf_path = os.getenv("HOME") .. "/.config/Desktop.conf"
 -- Carrega atalhos e programas dinamicamente
 local mainMod     = read_ini_value(conf_path, "Keybinds", "main_mod", "SUPER")
 local terminal    = read_ini_value(conf_path, "Apps", "terminal", "kitty")
-local fileManager = read_ini_value(conf_path, "Apps", "filemanager", "dolphin")
-local menu        = read_ini_value(conf_path, "Apps", "menu", "ArtexDesktop --StartMenu")
-local Browser = read_ini_value(conf_path, "Keybinds", "Browser", "firefox")
+local fileManager = read_ini_value(conf_path, "Apps", "filemanager", "Thunar")
+local menu        = read_ini_value(conf_path, "Apps", "menu", "ArtexDesktop --StartMenu -r")
+local Browser     = read_ini_value(conf_path, "Keybinds", "Browser", "firefox")
 
 local key_term    = read_ini_value(conf_path, "Keybinds", "bind_terminal", "Q")
 local key_close   = read_ini_value(conf_path, "Keybinds", "bind_close", "C")
@@ -44,7 +44,7 @@ hl.bind(mainMod .. " + " .. key_file, hl.dsp.exec_cmd(fileManager))
 hl.bind(mainMod .. " + " .. key_Browser, hl.dsp.exec_cmd(Browser))
 hl.bind(mainMod .. " + " .. key_float, hl.dsp.window.float({ action = "toggle" }))
 hl.bind(mainMod .. " + M", hl.dsp.exec_cmd("ArtexDesktop --Desktop -r"))
-
+hl.bind(mainMod .. " + H", hl.dsp.exec_cmd("ArtexDesktop --Wallpaper -r"))
 
 hl.bind(mainMod .. " + P", hl.dsp.window.pseudo())
 hl.bind(mainMod .. " + J", hl.dsp.layout("togglesplit"))    

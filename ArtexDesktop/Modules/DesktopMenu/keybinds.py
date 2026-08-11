@@ -30,7 +30,7 @@ class KeybindsTab(QWidget):
 
         layout.addWidget(QLabel("Gerenciador de Arquivos:"))
         self.app.app_filemanager_input = QLineEdit()
-        self.app.app_filemanager_input.setPlaceholderText("dolphin")
+        self.app.app_filemanager_input.setPlaceholderText("Thunar")
         layout.addWidget(self.app.app_filemanager_input)
 
         layout.addWidget(QLabel("Menu de Aplicativos / Launcher:"))

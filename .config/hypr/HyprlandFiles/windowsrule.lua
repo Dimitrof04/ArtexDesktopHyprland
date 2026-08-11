@@ -39,42 +39,36 @@ hl.window_rule({
 })
 
 -- Regras para a janela do Menu PyQt6
-hl.window_rule ({
-    { "float",      "class:^(hypr_menu)$" },
-    { "center",     "class:^(hypr_menu)$" },
-    { "stayfocused","class:^(hypr_menu)$" },
-    { "pin",        "class:^(hypr_menu)$" },
-    { "dimaround",  "class:^(hypr_menu)$" },
+hl.window_rule({
+    name = "hypr-menu",
+    match = { class = "^(hypr_menu)$" },
+
+    float = true,
+    center = true,
+    pin = true,
+    stay_focused = true,
+    dim_around = true,
 })
 
-hl.window_rule ({
-    { "float",      "class:^(hypr_menu)$" },
-    { "center",     "class:^(hypr_menu)$" },
-    { "stayfocused","class:^(hypr_menu)$" },
-    { "pin",        "class:^(hypr_menu)$" },
-    { "dimaround",  "class:^(hypr_menu)$" },
+-- Regras para o Seletor de Wallpaper
+hl.window_rule({
+    name = "wallpaper-selector",
+    match = { class = "^(wallpaper-selector)$" },
+
+    float = true,
+    --center = true,
+    pin = true,
+    stay_focused = true,
+    dim_around = true,
+    no_shadow = true,
+    fullscreen = 1,
+    border_size = 0,
+    move = "{0, 0}"
 })
 
-hl.window_rule ({
-    { "float",       "class:^(wallpaper-selector)$" },
-    { "stayfocused", "class:^(wallpaper-selector)$" },
-    { "pin",         "class:^(wallpaper-selector)$" },
-    { "noborder",    "class:^(wallpaper-selector)$" },
-})
-
--- Habilita opacidade e blur para a classe do Foot
 -- Blur e Opacidade para o Foot
 hl.window_rule({
     name = "foot-blur",
     match = { class = "^(foot)$" },
     opacity = "0.85 0.85",
 })
-
--- Regras para transformar o ShellBar.py em uma barra nativa no topo
---[[hl.window_rule({
-    { "float",      "title:^(Hyprland Python Bar)$" },
-    { "move 0 0",   "title:^(Hyprland Python Bar)$" },
-    { "pin",        "title:^(Hyprland Python Bar)$" },
-    { "noborder",   "title:^(Hyprland Python Bar)$" },
-    { "noshadow",   "title:^(Hyprland Python Bar)$" },
-})]]

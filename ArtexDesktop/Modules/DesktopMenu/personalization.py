@@ -1,4 +1,5 @@
 import os
+import subprocess
 import random
 from pathlib import Path
 from PyQt6.QtWidgets import (
@@ -98,8 +99,11 @@ class PersonalizationTab(QWidget):
         layout.addWidget(self.app.awww_translate_options)
 
         save_btn = QPushButton("Salvar Configurações")
-        save_btn.setObjectName("PrimaryButton")
         save_btn.clicked.connect(self.app.save_settings)
+        layout.addWidget(save_btn)
+
+        save_btn = QPushButton("Escholer wallpaper")
+        save_btn.clicked.connect(self.StartWallpaperSelectWallpaper)
         layout.addWidget(save_btn)
 
         random_wp_btn = QPushButton("Wallpaper Aleatório")
@@ -120,6 +124,9 @@ class PersonalizationTab(QWidget):
                 self.wallpaper_preview_label.setPixmap(scaled_pixmap)
                 return
         self.wallpaper_preview_label.setText("Imagem não encontrada")
+
+    def StartWallpaperSelectWallpaper(self):
+        subprocess.run(["ArtexDesktop", "--Wallpaper", "-r"])
 
     def select_wallpaper_file(self):
         file_path, _ = QFileDialog.getOpenFileName(

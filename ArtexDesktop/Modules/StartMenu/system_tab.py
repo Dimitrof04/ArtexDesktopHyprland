@@ -3,7 +3,6 @@ import sys
 from pathlib import Path
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QPushButton, QApplication
 from PyQt6.QtGui import QFont
-from Modules.theme_sync import set_system_theme
 from PyQt6.QtCore import QSettings
 
 CONFIG_MENU_PATH = str(Path.home() / ".config" / "DesktopDimitrof04Apps" / "DektopConfigMenu.py")
@@ -80,5 +79,5 @@ class SystemTab(QWidget):
         settings.endGroup()
 
         new_theme = "Light" if current_theme == "Dark" else "Dark"
-        set_system_theme(new_theme, accent_color)
+        subprocess.run(["ArtexDesktop", "--theme", new_theme])
         self.refresh_theme_callback()

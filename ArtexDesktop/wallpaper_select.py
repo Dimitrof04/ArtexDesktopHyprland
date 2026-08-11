@@ -1,14 +1,14 @@
 import sys
 import os
 import re
-import configparser
 import subprocess
 from pathlib import Path
 from PyQt6.QtCore import Qt, QRectF
 from PyQt6.QtWidgets import QApplication, QWidget
 from PyQt6.QtGui import QPainter, QPainterPath, QPixmap, QColor, QTransform, QWheelEvent, QKeyEvent, QGuiApplication
 
-CONFIG_PATH = Path.home() / ".config" / "Desktop.config"
+# FIX 1: Extensão alterada de Desktop.config para Desktop.conf
+CONFIG_PATH = Path.home() / ".config" / "Desktop.conf"
 
 class WallpaperCard:
     def __init__(self, path):
@@ -77,10 +77,13 @@ class WallpaperSelectorApp(QWidget):
                     self.awww_transition = trans_match.group(1).strip()
             except Exception as e:
                 print(f"Erro ao ler config: {e}")
+        else:
+            print(f"⚠️ Configuração não encontrada em: {CONFIG_PATH}")
 
     def save_wallpaper_to_config(self, selected_path):
-        """Atualiza a chave Wallpaper= preservando 100% da estrutura, comentarios e formatacao do arquivo."""
+        """Atualiza a chave Wallpaper= preservando 100% da estrutura, comentários e formatação do arquivo."""
         if not CONFIG_PATH.exists():
+            print(f"⚠️ Não foi possível salvar: {CONFIG_PATH} não existe.")
             return
 
         try:
@@ -94,39 +97,54 @@ class WallpaperSelectorApp(QWidget):
             for line in lines:
                 stripped = line.strip()
 
-                # Identifica se estamos na seção [Wallpapers]
+                # Identifica se estamos na seção [Wallpapers] ou [General]
                 if stripped.startswith("[") and stripped.endswith("]"):
-                    in_wallpapers_section = (stripped.lower() == "[wallpapers]")
+                    in_wallpapers_section = (stripped.lower() == "[wallpapers]" or stripped.lower() == "[general]")
 
-                # Se estivermos dentro de [Wallpapers] e achar a linha Wallpaper=...
+                # Se estivermos em uma seção válida e achar a linha Wallpaper=...
                 if in_wallpapers_section and stripped.startswith("Wallpaper="):
-                    new_lines.append(f"Wallpaper={selected_path}\n")
+                    # Mantém o comentário se houver
+                    if "#" in line and not line.strip().startswith("#"):
+                        comment = " #" + line.split("#", 1)[1].rstrip()
+                        new_lines.append(f"Wallpaper={selected_path}{comment}\n")
+                    else:
+                        new_lines.append(f"Wallpaper={selected_path}\n")
                     wallpaper_updated = True
                 else:
                     new_lines.append(line)
 
-            # Se por acaso não encontrou Wallpaper= dentro de [Wallpapers], adiciona lá
+            # Se não encontrou nenhuma linha Wallpaper= para atualizar, insere na seção [Wallpapers]
             if not wallpaper_updated:
                 final_lines = []
                 for line in new_lines:
                     final_lines.append(line)
                     if line.strip().lower() == "[wallpapers]":
                         final_lines.append(f"Wallpaper={selected_path}\n")
+                        wallpaper_updated = True
                 new_lines = final_lines
 
             with open(CONFIG_PATH, "w", encoding="utf-8") as f:
                 f.writelines(new_lines)
+                
+            print(f"✅ Wallpaper salvo em {CONFIG_PATH}: {selected_path}")
 
         except Exception as e:
             print(f"Erro ao salvar config: {e}")
 
     def load_wallpapers(self):
+        # FIX 2: Expande ~/ para o caminho completo do usuário (/home/usuario)
         folder_path = os.path.expanduser(self.wallpapers_folder)
         folder = Path(folder_path)
+        
         if folder.exists():
             exts = ('.png', '.jpg', '.jpeg', '.webp', '.bmp')
             files = [str(f) for f in folder.iterdir() if f.suffix.lower() in exts]
+            # Ordena por nome de arquivo
+            files.sort()
             self.wallpapers = [WallpaperCard(f) for f in files]
+            print(f"🖼️ Carregados {len(self.wallpapers)} wallpapers de {folder_path}")
+        else:
+            print(f"⚠️ Pasta de wallpapers não encontrada: {folder_path}")
 
     def paintEvent(self, event):
         painter = QPainter(self)
@@ -199,6 +217,8 @@ class WallpaperSelectorApp(QWidget):
             painter.restore()
 
     def wheelEvent(self, event: QWheelEvent):
+        if not self.wallpapers:
+            return
         delta = event.angleDelta().y()
         if delta < 0:
             self.current_index = (self.current_index + 1) % len(self.wallpapers)
@@ -207,6 +227,9 @@ class WallpaperSelectorApp(QWidget):
         self.update()
 
     def keyPressEvent(self, event: QKeyEvent):
+        if not self.wallpapers and event.key() not in (Qt.Key.Key_Escape, Qt.Key.Key_Backspace):
+            return
+
         key = event.key()
 
         if key in (Qt.Key.Key_Right, Qt.Key.Key_Down):
@@ -237,17 +260,19 @@ class WallpaperSelectorApp(QWidget):
         ]
         subprocess.Popen(cmd)
 
-        # 2. Salva apenas a linha do Wallpaper no Desktop.config sem apagar nada
+        # 2. Salva apenas a linha do Wallpaper no Desktop.conf sem apagar nada
         self.save_wallpaper_to_config(selected_path)
 
 if __name__ == "__main__":
-    # Define o nome da classe do gerenciador de janelas no Wayland/X11
     sys.argv.extend(["-name", "wallpaper-selector"])
     
     app = QApplication(sys.argv)
     app.setApplicationName("wallpaper-selector")
     app.setDesktopFileName("wallpaper-selector")
     
+    QGuiApplication.setDesktopFileName("wallpaper-selector")
+    
     selector = WallpaperSelectorApp()
     selector.show()
+
     sys.exit(app.exec())
