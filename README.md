@@ -30,3 +30,29 @@ git clone https://github.com/Dimitrof04/ArtexDesktop.git
 cd ArtexDesktop
 chmod +x install.sh
 ./install.sh
+```
+
+Keybinds (credits casestial for the list)
+
+| Keybind                                       | Action                                                      |
+| ------------------------------                | ----------------------------------------------------------- |
+| `Super` + `$n (nunber 1 ~ 10 or s)`           | Switch to workspace (S = special worskpace)                 |
+| `Super` + `Shift` + `$n (nunber 1 ~ 10 or s)` | Move window to workspace (S = special worskpace)            |
+| `Super` + `Q`                                 | Open terminal                                               |
+| `Super` + `W`                                 | Open browser                                                |
+| `Super` + `E`                                 | Open File manager                                           |
+| `Super` + `C`                                 | Close Window                                                |
+| `Super` + `R`                                 | Open menu (ArtexMenu = default)                             |
+| `Super` + `M`                                 | Open Senttigs                                               |
+| `Super` + `H`                                 | Open WallpaperSelector                                      |
+| `Super` + `Space`                             | Toggle special workspace or close current special workspace |
+| `Super` + `Shift` + `Delete`                  | Logout or restart hyprland                                  |
+| `Super` + `Shift` + `R`                       | Restart the ShellBar                                        |
+
+
+> [!Tip]
+> You can use ArtexDesktop in terminal
+
+```bash
+ArtexDesktop --help # or -h
+```
