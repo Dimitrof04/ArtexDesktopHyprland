@@ -20,10 +20,11 @@ ACTION=""
 THEME=""
 THEME_REQUEST=false
 GLOBAL_RESET=false
+FORM_EXPR=""
 
 show_help() {
     cat << EOF
-usage: $PROG_NAME [-h] [-v] [--StartMenu] [--ShellBar] [--Desktop] [--WallpaperSelect] [-i] [-k] [-r] [-s] [--theme THEME] [--themerequest] [--gr | --globalreset]
+usage: $PROG_NAME [-h] [-v] [--StartMenu] [--ShellBar] [--Desktop] [--WallpaperSelect] [-i] [-k] [-r] [-s] [--theme THEME] [--themerequest] [--gr | --globalreset] [--form "EXPRESSAO"]
 
 options:
   -h, --help            Show this help message and exit
@@ -38,6 +39,7 @@ options:
   --theme THEME         Altera o tema do sistema (opções: Light, Dark)
   --themerequest        Retorna o tema que está aplicado no momento
   --gr, --globalreset   Força a remoção de travas (.lock) e mata processos travados
+  --form EXPRESSAO      Calcula e retorna o resultado de uma expressão matemática
   ==============
   -i, --init            Iniciar o serviço selecionado
   -k, --kill            Matar o serviço selecionado
@@ -103,6 +105,10 @@ while [[ $# -gt 0 ]]; do
             GLOBAL_RESET=true
             shift
             ;;
+        --form)
+            FORM_EXPR="$2"
+            shift 2
+            ;;
         *)
             echo "Opção desconhecida: $1"
             show_help
@@ -140,7 +146,6 @@ get_current_theme() {
     fi
 }
 
-# --- Na função get_service_info ---
 get_service_info() {
     local target="$1"
     case "$target" in
@@ -277,6 +282,8 @@ handle_action() {
 main() {
     if [ "$GLOBAL_RESET" = true ]; then
         global_reset
+    elif [ -n "$FORM_EXPR" ]; then
+        python3 -c "import sys; print(eval(sys.argv[1]))" "$FORM_EXPR"
     elif [ "$THEME_REQUEST" = true ]; then
         get_current_theme
     elif [ -n "$THEME" ]; then
