@@ -242,7 +242,7 @@ class ShellBar(Gtk.Window):
         self._build_right_section()
 
         self.update_theme_from_config()
-        GLib.timeout_add(1000, self.update_theme_from_config)
+        GLib.timeout_add(200, self.update_theme_from_config)
         
         # Checa a workspace inicial e monitora continuamente
         self._check_active_workspace()
