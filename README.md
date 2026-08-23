@@ -1,9 +1,6 @@
-# 🌌 Artex Desktop
+# 🌌 Artex Desktop Hyprland
 
 A sleek, minimalist, and highly optimized Hyprland configuration.
-
-> [!TIP]
-> This build is highly recommended for Arch-based distributions (Arch Linux, CachyOS, Archcraft, EndeavourOS, etc.).
 
 ---
 
@@ -25,7 +22,14 @@ This Hyprland environment is built using the following core software:
 Run the interactive installer script to set up everything automatically:
 
 ```bash
+# Arch Linux
 sudo pacman -Syu --needed git
+git clone https://github.com/Dimitrof04/ArtexDesktop.git
+cd ArtexDesktop
+chmod +x install.sh
+./install.sh
+# debian/ubuntu
+sudo apt update && sudo apt up
 git clone https://github.com/Dimitrof04/ArtexDesktop.git
 cd ArtexDesktop
 chmod +x install.sh
