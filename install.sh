@@ -90,7 +90,7 @@ INSTALL_TOOLS=${INSTALL_TOOLS:-Y}
 
 if [[ $INSTALL_TOOLS =~ ^[Yy]$ ]]; then
     echo -e "${BLUE}[+] Installing tools...${NC}"
-    yay -S --needed fastfetch asciiquarium pipes.sh lavat peaclock unimatrix cava Audacious lyrics-in-terminal cmatrix --noconfirm
+    yay -S --needed fastfetch asciiquarium pipes.sh lavat peaclock unimatrix cava Audacious lyrics-in-terminal cmatrix aafire --noconfirm
 fi
 
 # 3. Copiar configurações de .config
