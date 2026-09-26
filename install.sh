@@ -44,12 +44,13 @@ copy_file() {
     local dest="$2"
     
     if $IS_AUTO; then
-        cp -rf "$src" "$dest"
+        cp "$src" "$dest"
         echo -e "${BLUE}[+] Copied ${src} -> ${dest}${NC}"
     else
         read -p "Overwrite/Copy ${src} to ${dest}? [Y/n]: " confirm
         confirm=${confirm:-Y}
         if [[ $confirm =~ ^[Yy]$ ]]; then
+
             cp -rf "$src" "$dest"
             echo -e "${BLUE}[+] Copied!${NC}"
         else
@@ -59,14 +60,25 @@ copy_file() {
 }
 
 # 1. Copiar pacotes essenciais
-echo -e "\n${BLUE}--- Installing Packages ---${NC}"
+echo -e "\n${BLUE}--- Installing the necessary packages ---${NC}"
 yay -Syu --noconfirm
-yay -S --needed --noconfirm hyprland waybar python-pyqt6 foot fish awww hyprlock pavucontrol ttf-nerd-fonts-symbols dolphin
+yay -S --needed --noconfirm hyprland foot fish awww
+
+read -p "\n$Do you want recommended apps? (It is not required, but it is recommended.) [Y/n] ---${NC}" extrapps
+
+extrapps=true
+
+case $extrapps in
+    2) $extrapps=true ;;
+    *) $extrapps=false
+esac
+
+#if [$extrapps] then
+#    yay -S --needed --noconfirm hyprlock pavucontrol ttf-nerd-fonts-symbols thunar dolphin
+#fi
 
 # Atualizar repositórios e instalar pacotes do sistema
-yay -S --needed --noconfirm gtk3 python python-pip python-pillow python-requests python-psutil python-pyqt6 networkmanager bluez bluez-utils wireplumber pipewire-audio lsb-release ttf-font-awesome ttf-nerd-fonts-symbols-common noto-fonts-emoji gtk-layer-shell
-
-#sudo luarocks --lua-version=5.1 install lgi
+yay -S --needed --noconfirm gtk3 python networkmanager bluez bluez-utils wireplumber pipewire-audio lsb-release ttf-font-awesome ttf-nerd-fonts-symbols-common noto-fonts-emoji gtk-layer-shell
 
 # Habilitar serviços essenciais
 sudo systemctl enable --now NetworkManager
@@ -78,8 +90,7 @@ INSTALL_TOOLS=${INSTALL_TOOLS:-Y}
 
 if [[ $INSTALL_TOOLS =~ ^[Yy]$ ]]; then
     echo -e "${BLUE}[+] Installing tools...${NC}"
-    yay -S --needed fastfetch asciiquarium pipes.sh lavat peaclock unimatrix cava Audacious lyrics-in-terminal --noconfirm
-    pip install wxPython requests psutil pywinctl bs4 plyer
+    yay -S --needed fastfetch asciiquarium pipes.sh lavat peaclock unimatrix cava Audacious lyrics-in-terminal cmatrix aafire --noconfirm
 fi
 
 # 3. Copiar configurações de .config
@@ -169,7 +180,13 @@ else
     esac
 fi
 
-sudo ln -s ~/.local/share/ArtexDesktop/Main.sh /usr/local/bin/ArtexDesktop
+cd ~
+
+git https://github.com/Dimitrof04/ArtexDesktopApps.git
+.~/ArtexDesktopApps/install.sh
+source .venv/bin/activate
+pip install wxPython requests psutil pywinctl bs4 plyer pip pillow requests psutil pyqt6
+deactivate
 
 echo -e "\n${BLUE}=======================================${NC}"
 echo -e "${BLUE}    Installation Complete! Enjoy! :3   ${NC}"
