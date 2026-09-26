@@ -8,12 +8,12 @@ A sleek, minimalist, and highly optimized Hyprland configuration.
 
 This Hyprland environment is built using the following core software:
 
-* **Window Manager:** [Hyprland](https://hyprland.org/) *(Dynamic tiling Wayland compositor)*
-* **Status Bar:** [Waybar](https://github.com/Alexays/Waybar) *(Highly customizable Wayland bar)*
+* **Window Manager:** [Hyprland](https://hyprland.org/)
+* **Status Bar:** [Waybar](https://github.com/Alexays/Waybar)
 * **App Launcher:** [HyprLaucher](https://wiki.hypr.land/Hypr-Ecosystem/hyprlauncher/)
-* **Terminal Emulator:** [Kitty](https://sw.kovidgoyal.net/kitty/) *(Fast, feature-rich, GPU-based terminal)*
+* **Terminal Emulator:** [Kitty](https://sw.kovidgoyal.net/kitty/)
 * **Wallpaper Manager:** `awww`
-* **Screen Locker:** [Hyprlock](https://wiki.hyprland.org/Hypr-ecosystem/hyprlock/) *(Fast, secure screen locker)*
+* **Screen Locker:** [Hyprlock](https://wiki.hyprland.org/Hypr-ecosystem/hyprlock/)
 
 ---
 
@@ -24,8 +24,8 @@ Run the interactive installer script to set up everything automatically:
 ```bash
 # Arch Linux
 sudo pacman -Syu --needed git
-git clone https://github.com/Dimitrof04/ArtexDesktop.git
-cd ArtexDesktop
+git clone https://github.com/Dimitrof04/ArtexDesktopHyprland.git
+cd ArtexDesktopHyprland
 chmod +x install.sh
 ./install.sh
 ```
@@ -34,8 +34,8 @@ Keybinds (credits casestial for the list)
 
 | Keybind                                       | Action                                                      |
 | ------------------------------                | ----------------------------------------------------------- |
-| `Super` + `$n (nunber 1 ~ 10 or s)`           | Switch to workspace (S = special worskpace)                 |
-| `Super` + `Shift` + `$n (nunber 1 ~ 10 or s)` | Move window to workspace (S = special worskpace)            |
+| `Super` + `1-10 or s`                         | Switch to workspace (S = special worskpace)                 |
+| `Super` + `Shift` + `1-10 or s`               | Move window to workspace (S = special worskpace)            |
 | `Super` + `Q`                                 | Open terminal                                               |
 | `Super` + `W`                                 | Open browser                                                |
 | `Super` + `E`                                 | Open File manager                                           |
