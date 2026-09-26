@@ -28,12 +28,6 @@ git clone https://github.com/Dimitrof04/ArtexDesktop.git
 cd ArtexDesktop
 chmod +x install.sh
 ./install.sh
-# debian/ubuntu
-sudo apt update && sudo apt up
-git clone https://github.com/Dimitrof04/ArtexDesktop.git
-cd ArtexDesktop
-chmod +x install.sh
-./install.sh
 ```
 
 Keybinds (credits casestial for the list)
@@ -52,11 +46,3 @@ Keybinds (credits casestial for the list)
 | `Super` + `Space`                             | Toggle special workspace or close current special workspace |
 | `Super` + `Shift` + `Delete`                  | Logout or restart hyprland                                  |
 | `Super` + `Shift` + `R`                       | Restart the ShellBar                                        |
-
-
-> [!Tip]
-> You can use ArtexDesktop in terminal
-
-```bash
-ArtexDesktop --help # or -h
-```
