@@ -9,8 +9,6 @@ A sleek, minimalist, and highly optimized Hyprland configuration.
 This Hyprland environment is built using the following core software:
 
 * **Window Manager:** [Hyprland](https://hyprland.org/)
-* **Status Bar:** [Waybar](https://github.com/Alexays/Waybar)
-* **App Launcher:** [HyprLaucher](https://wiki.hypr.land/Hypr-Ecosystem/hyprlauncher/)
 * **Terminal Emulator:** [Kitty](https://sw.kovidgoyal.net/kitty/)
 * **Wallpaper Manager:** `awww`
 * **Screen Locker:** [Hyprlock](https://wiki.hyprland.org/Hypr-ecosystem/hyprlock/)
@@ -29,8 +27,6 @@ cd ArtexDesktopHyprland
 chmod +x install.sh
 ./install.sh
 ```
-
-Keybinds (credits casestial for the list)
 
 | Keybind                                       | Action                                                      |
 | ------------------------------                | ----------------------------------------------------------- |

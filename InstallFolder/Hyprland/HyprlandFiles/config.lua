@@ -1,6 +1,6 @@
 local function get_desktop_conf(group, key, default_val)
     local home = os.getenv("HOME") or ""
-    local conf_path = home .. "/.config/Desktop.conf"
+    local conf_path = home .. "/.config/ArtexDesktop/Hyprland.ini"
     local file = io.open(conf_path, "r")
     if not file then return default_val end
 

@@ -1,7 +1,6 @@
 local Autoboot = {
     "nm-applet", -- Substituído 'NetwokManager' pelo comando gráfico comum ou o binário correto
     "awww-daemon",
-    "ArtexDesktop --ShellBar -i"
 }
 
 hl.on("hyprland.start", function()

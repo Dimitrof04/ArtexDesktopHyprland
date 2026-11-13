@@ -20,12 +20,11 @@ local function read_ini_value(filepath, section, key, default)
     return default
 end
 
-local conf_path = os.getenv("HOME") .. "/.config/Desktop.conf"
+local conf_path = os.getenv("HOME") .. "/.config/ArtexDesktop/Hyprland.ini"
 
--- Carrega atalhos e programas dinamicamente
 local mainMod     = read_ini_value(conf_path, "Keybinds", "main_mod", "SUPER")
 local terminal    = read_ini_value(conf_path, "Apps", "terminal", "kitty")
-local fileManager = read_ini_value(conf_path, "Apps", "filemanager", "Thunar")
+local fileManager = read_ini_value(conf_path, "Apps", "filemanager", "dolphin")
 local menu        = read_ini_value(conf_path, "Apps", "menu", "ArtexDesktop --StartMenu -r")
 local Browser     = read_ini_value(conf_path, "Keybinds", "Browser", "firefox")
 
@@ -34,7 +33,7 @@ local key_close   = read_ini_value(conf_path, "Keybinds", "bind_close", "C")
 local key_menu    = read_ini_value(conf_path, "Keybinds", "bind_menu", "R")
 local key_file    = read_ini_value(conf_path, "Keybinds", "bind_filemanager", "E")
 local key_Browser = read_ini_value(conf_path, "Keybinds", "bind_browser", "W")
-local key_float = read_ini_value(conf_path, "Keybinds", "bind_ToggleFloting", "Space")
+local key_float   = read_ini_value(conf_path, "Keybinds", "bind_ToggleFloting", "Space")
 
 -- Binds
 hl.bind(mainMod .. " + " .. key_term, hl.dsp.exec_cmd(terminal))
@@ -65,11 +64,10 @@ hl.bind(mainMod .. " + SHIFT + Page_Down", hl.dsp.window.move({ workspace = "e+1
 
 hl.bind(mainMod .. " + SHIFT + R", hl.dsp.exec_cmd("ArtexDesktop --ShellBar -r")) -- restart waybar
 
--- Mantido suporte a mudar via números [1-10]
 for i = 1, 10 do
     local key = i % 10
-    hl.bind(mainMod .. " + " .. key,             hl.dsp.focus({ workspace = i}))
-    hl.bind(mainMod .. " + SHIFT + " .. key,     hl.dsp.window.move({ workspace = i }))
+    hl.bind(mainMod .. " + " .. key, hl.dsp.focus({ workspace = i }))
+    hl.bind(mainMod .. " + SHIFT + " .. key, hl.dsp.window.move({ workspace = i }))
 end
 
 -- Sair/Desligar
